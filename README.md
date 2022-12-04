@@ -412,8 +412,6 @@ cache.
 
 Add some pictures.
 
-Show the .ld file with the symbols `__data_start__`, `__logging_start__`, and `__logging_end__`.
-
-Add the code.
+The code is still has dependencies on our build environment; Need to sanitize it further and create a github workflow for compiling/running/testing.
 
 Add the freertos patch for the stack red zone
