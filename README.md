@@ -41,7 +41,7 @@ we also updated FreeRTOS task create/switch to program a red zone at the bottom 
 
 ## example:
 
-For our case we would program the MPU entries to be read/only & execute for the .text section, and read/write & no-execute for the .bss section, plus we had some write-through memory for logging, and some device memory for the IO space.
+For our case we would program the MPU entries to be read/only & execute for the .text section, and read/write & no-execute for the .bss section, plus we had some write-through memory for logging, some uncached memory for inbox/outbox, and some device memory for the IO space.
 
 After programming the entries, displaying the memory map looks like this:
 
@@ -55,7 +55,7 @@ start    end      size   #  description
 0048d800 0048ffff    10K  8 WRITE_THROUGH_NO_WRITE_ALLOCATE (logging)             
 00490000 004effff   384K  7 WRITE_THROUGH_NO_WRITE_ALLOCATE (logging)             
 004f0000 004f7fff    32K  2 WRITE_BACK_READ_AND_WRITE_ALLOCATE (fully cached)     
-004f8000 004fbfff    16K  4 UNCACHED e.g. inbox/outbox, pktmem                    
+004f8000 004fbfff    16K  4 UNCACHED e.g. inbox/outbox                    
 004fc000 004fffff    16K  3 WRITE_THROUGH_NO_WRITE_ALLOCATE (logging)             
 00500000 00efffff    10M  . unmapped      
 00f00000 00ffffff     1M  1 DEVICE_SHAREABLE                  
