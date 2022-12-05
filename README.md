@@ -33,7 +33,7 @@ At microchip, we added some functions to display the memory protection settings 
 
 I found that looking up the values of TEX/B/C and figuring out what that combination of values really meant was confusing, so I created macros for the TEX/B/C values that I use, and use these descriptions of the settings rather than arbitrary TEX/B/C settings in all the tools.  This means that it looks nice to someone that doesn't want to know the gory details, but it's a layer of potential confusion.  (e.g. i use the name "NO_ACCESS" instead of TEX=0,B=0,C=0)
 
-Initially, we calculated the entries at program startup, but that adds a small amount of time and a smidgen of code, so instead we have a second program that looks at the linker sections and creates the MPU entries, then we recompile one file with the updated MPU entries and relink. 
+Initially, we calculated the entries at program startup, but that adds a small amount of time and a smidgen of code, so instead we created a program that looks at the linker sections and calculates the MPU entries, then we recompile one file with the updated MPU entries and relink. 
 
 ## FreeRTOS stack red zone.
 
