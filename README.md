@@ -392,9 +392,6 @@ cache.
 // this would help with zero'ing a chunk of memory,... it wouldn't adversely affect the cache.
 // or if you were placing data into a buffer that was about to DMA'd or used by another core,... (write only memory!)
 // or memory that's written to, but won't be needed for quite a while.
-//
-// perhaps the only memory that should be WRITE_ALLOCATE is stack,... unfortunately stack is part of heap.
-
 
 // uncached.
 #define NORMAL_UNCACHED ARM_MPU_ACCESS_( TEX_001, S1, C0, B0 )
