@@ -63,16 +63,6 @@ sample yaml file:
     size:  1M
     attributes: 
     comment: 
- region:
-    start: 0x0
-    size:  1M
-    attributes: 
-    comment: 
- region:
-    start: 0x0
-    size:  1M
-    attributes: 
-    comment: 
 ```
  and creates the corresponding header file.
 
