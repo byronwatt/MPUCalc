@@ -9,6 +9,7 @@
 #define MPU_CALCULATOR_H
 
 #include "mdx2_fw_types.h"
+#include "cpu_m7.h"
 #include "mpu_armv7.h"
 
 class mpu_calculator_t {

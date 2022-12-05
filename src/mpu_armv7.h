@@ -255,6 +255,7 @@ typedef struct {
   uint32_t RASR; //!< The region attribute and size register value (RASR)
 } ARM_MPU_Region_t;
 
+#ifdef MDX2_FREERTOS_TARGET
 /** Enable the MPU.
 * \param MPU_Control Default access permissions for unconfigured regions.
 */

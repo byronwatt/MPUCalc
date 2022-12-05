@@ -10,6 +10,11 @@
 #include "mpu_armv7.h"
 #include "configure_mpu.h"
 
+#ifdef MDX2_SMALL_MEMORY
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...) fprintf(f,__VA_ARGS__)
+#endif
 
 /// return string describing the memory region (a combination of three of the arguments to the CMSIS ARM_MPU_RASR_EX() macro)
 const char *mpu_entry_t::access_type_to_string() const
@@ -158,7 +163,7 @@ void mpu_entry_t::set( uint32_t RBAR, uint32_t RASR )
     }
     //if (enable)
     //{
-    //    fprintf(f,"0x%08x .. 0x%08x: %d 0x%02x %s\n",BaseAddress,BaseAddress+size_pwr_2-1,Region,SubRegionDisable,access_type_to_string());
+    //    printf("0x%08x .. 0x%08x: %d 0x%02x %s\n",BaseAddress,BaseAddress+size_pwr_2-1,Region,SubRegionDisable,access_type_to_string());
     //}
 }
 
@@ -228,8 +233,10 @@ void mpu_entry_t::print(FILE *f, const char *prefix)
 {
     if (enable)
     {
-        fprintf(f,"%s%s\n",prefix,comment.c_str());
-        fprintf(f,"%s%d: 0x%08x",prefix,Region,BaseAddress);
+#ifndef MDX2_SMALL_MEMORY
+        PRINTF("%s%s\n",prefix,comment.c_str());
+#endif
+        PRINTF("%s%d: 0x%08x",prefix,Region,BaseAddress);
         char region_buffer[10];
         if (size_pwr_2 == 0)
         {
@@ -239,8 +246,8 @@ void mpu_entry_t::print(FILE *f, const char *prefix)
         {
             format_size(region_buffer,size_pwr_2);
         }
-        fprintf(f,", size=%s",region_buffer);
-        fprintf(f,", XN=%d, AP=0x%x, TEX=0x%x, S=0x%x, C=0x%x, B=0x%x, SRD=0x%x\n",
+        PRINTF(", size=%s",region_buffer);
+        PRINTF(", XN=%d, AP=0x%x, TEX=0x%x, S=0x%x, C=0x%x, B=0x%x, SRD=0x%x\n",
             DisableExec,
             AccessPermission,
             TypeExtField,
@@ -252,14 +259,14 @@ void mpu_entry_t::print(FILE *f, const char *prefix)
         {
             char buffer[10];
             format_size(buffer,subregion_size);
-            fprintf(f,"%s   subregion_size=%s",prefix,buffer);
+            PRINTF("%s   subregion_size=%s",prefix,buffer);
             uint32_t subregions = (~SubRegionDisable) & 0xff;
-            fprintf(f,", subregions=0x%02x\n",subregions);
+            PRINTF(", subregions=0x%02x\n",subregions);
             // 8 subregions that can be either active or inactive
             if (subregions != 0)
             {
-                fprintf(f,"%s   region mask enabled start      end\n",prefix);
-                fprintf(f,"%s   ------ ---- ------- ---------- ----------\n",prefix);
+                PRINTF("%s   region mask enabled start      end\n",prefix);
+                PRINTF("%s   ------ ---- ------- ---------- ----------\n",prefix);
 
                 for (uint32_t i = 0; i < 8; i++)
                 {
@@ -268,11 +275,11 @@ void mpu_entry_t::print(FILE *f, const char *prefix)
                     // if enabled
                     if (subregions&(0x1<<i))
                     {
-                        fprintf(f,"%s      %d   0x%02x    Y    0x%08x 0x%08x <-- enabled\n", prefix, i, 0x1<<i, subregion_start, subregion_end);
+                        PRINTF("%s      %d   0x%02x    Y    0x%08x 0x%08x <-- enabled\n", prefix, i, 0x1<<i, subregion_start, subregion_end);
                     }
                     else // disabled
                     {
-                        fprintf(f,"%s      %d   0x%02x    N    0x%08x 0x%08x\n", prefix, i, 0x1<<i, subregion_start, subregion_end);
+                        PRINTF("%s      %d   0x%02x    N    0x%08x 0x%08x\n", prefix, i, 0x1<<i, subregion_start, subregion_end);
                     }
                 }
             }
@@ -282,21 +289,23 @@ void mpu_entry_t::print(FILE *f, const char *prefix)
         //        .RBAR = ARM_MPU_RBAR(3UL, 0x007f8000UL),
         //        .RASR = ARM_MPU_RASR_EX(NEVER_EXECUTE, ARM_MPU_AP_FULL, NORMAL_WRITE_THROUGH_NO_WRITE_ALLOCATE, SR_0, ARM_MPU_REGION_SIZE_32KB)
         //    },
-        fprintf(f,"    {\n");
-        fprintf(f,"        .RBAR = ARM_MPU_RBAR(%dUL, 0x%08xUL),\n",Region,BaseAddress);
-        fprintf(f,"        .RASR = ARM_MPU_RASR_EX(%s, %s, %s, 0x%x, ARM_MPU_REGION_SIZE_%sB)\n",
+        PRINTF("    {\n");
+        PRINTF("        .RBAR = ARM_MPU_RBAR(%dUL, 0x%08xUL),\n",Region,BaseAddress);
+        PRINTF("        .RASR = ARM_MPU_RASR_EX(%s, %s, %s, 0x%x, ARM_MPU_REGION_SIZE_%sB)\n",
                 disable_exec_to_code(),access_permission_to_code(),access_type_to_code(),SubRegionDisable,region_buffer);
-        fprintf(f,"    },\n");
+        PRINTF("    },\n");
     }
     else // disabled
     {
         if (Region != 0)
         {
-            fprintf(f,"%s%s\n",prefix,comment.c_str());
-            fprintf(f,"    {\n");
-            fprintf(f,"        .RBAR = ARM_MPU_RBAR(%dUL, 0x%08xUL),\n",Region,BaseAddress);
-            fprintf(f,"        .RASR = 0\n");
-            fprintf(f,"    },\n");
+    #ifndef MDX2_SMALL_MEMORY
+            PRINTF("%s%s\n",prefix,comment.c_str());
+    #endif
+            PRINTF("    {\n");
+            PRINTF("        .RBAR = ARM_MPU_RBAR(%dUL, 0x%08xUL),\n",Region,BaseAddress);
+            PRINTF("        .RASR = 0\n");
+            PRINTF("    },\n");
         }
     }
 }
@@ -308,7 +317,11 @@ static void display_interval( const DisjointInterval<uint32_t,mpu_entry_t*>& rl,
     format_size(size_string,size);
     if (rl._list.empty())
     {
-        fprintf(f,"%s%08x %08x %6s  . unmapped\n",prefix,rl.start,rl.stop,size_string);
+#ifdef MDX2_SMALL_MEMORY
+        //MDX2_LOG2_ERROR(MDX2_DIGIHAL_MPU_MEMORY_UNMAPPED,rl.start,rl.stop);
+#else
+#endif
+        PRINTF("%s%08x %08x %6s  . unmapped\n",prefix,rl.start,rl.stop,size_string);
     }
     else
     {
@@ -323,7 +336,11 @@ static void display_interval( const DisjointInterval<uint32_t,mpu_entry_t*>& rl,
             if (e->Region >= max_region)
                 max_entry = e;
         }
-        fprintf(f,"%s%08x %08x %6s %2d %s\n",prefix,rl.start,rl.stop,size_string,max_entry->Region,max_entry->access_type_to_string());
+#ifdef MDX2_SMALL_MEMORY
+        //MDX2_LOG4_ERROR(MDX2_DIGIHAL_MPU_MEMORY_MAP,rl.start,rl.stop,max_entry->Region,(uint32_t)(size_t)max_entry->access_type_to_string());
+#else
+#endif
+        PRINTF("%s%08x %08x %6s %2d %s\n",prefix,rl.start,rl.stop,size_string,max_entry->Region,max_entry->access_type_to_string());
     }
 }
 static void display_range( const  DisjointRangeVector<uint32_t,mpu_entry_t*>& arv, FILE *f, const char *prefix ) {
@@ -404,12 +421,12 @@ void mpu_display_t::display_memory_map(FILE *f, const char *prefix)
     // into a disjoint set of intervals
     DisjointRangeVector<uint32_t,mpu_entry_t*> rv(0,0xffffffff,&v);
 
-    fprintf(f,"%sstart    end      size   #  description\n",prefix);
-    fprintf(f,"%s-------- -------- ------ -- -----------\n",prefix);
+    PRINTF("%sstart    end      size   #  description\n",prefix);
+    PRINTF("%s-------- -------- ------ -- -----------\n",prefix);
 
     // display the disjoint vector.
     ::display_range( rv, f, prefix );
-    fprintf(f,"\n");
+    PRINTF("\n");
 
 }
 
@@ -490,11 +507,14 @@ void mpu_display_t::get_first_and_last_address(uint32_t *first_addr_ptr, uint32_
  */
 void mpu_display_t::display_entries(FILE *f, const char *prefix)
 {
+#ifndef MDX2_SMALL_MEMORY
     for (uint32_t i=0;i<MAX_ENTRIES;i++)
     {
         mpu_entry_t *e = &mpu_entries[i];
         e->set(mpu_table[i].RBAR,mpu_table[i].RASR);
         e->print(f,prefix);
     }
+#endif
+
 }
 

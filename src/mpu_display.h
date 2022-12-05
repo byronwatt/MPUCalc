@@ -12,7 +12,9 @@
 #include "mdx2_fw_types.h"
 #include "cpu_m7.h"
 #include "mpu_armv7.h"
+#ifndef MDX2_SMALL_MEMORY
 #include <string>
+#endif
 
 // failed attempt to print a nice memory map,... maybe could be done as a debug_cmd or from the host,...
 // kinda hard to figure out the end of the region unless you simply scan forward 32 bytes at a time.

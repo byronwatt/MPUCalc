@@ -9,6 +9,11 @@
 #include "dbg_log.h"
 #include "mdx2_sys.h"
 
+#ifdef MDX2_FREERTOS_TARGET
+#define DEBUG_LOG_STRING(x) do { } while (0)
+#define DEBUG_PRINTF(...) do {} while (0)
+//do { if (debug) { LOG_STRING( #x, x ); } } while (0)
+#else
 #define DEBUG_LOG_STRING(x) do { } while (0)
 #define DEBUG_PRINTF(...) do {} while (0)
 /**
@@ -17,7 +22,7 @@ printf("%s = 0x%08x\n",#x,x); \
 } while(0)
 #define DEBUG_PRINTF() printf
 */
-
+#endif
 /*
  * use one more more regions to configure memory as read only
  * note: you could mix positive and negative regions but let's just use positive regions to build up the range of memory,
