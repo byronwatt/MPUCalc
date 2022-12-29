@@ -9,6 +9,7 @@
 #include "range_vector.h"
 #include "mpu_armv7.h"
 #include "configure_mpu.h"
+#include <cstring>
 
 #ifdef MDX2_SMALL_MEMORY
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -229,7 +230,7 @@ static void format_size( char buffer[10], uint32_t size_in_bytes )
     strcat(buffer,units);
 }
 
-void mpu_entry_t::print(FILE *f, const char *prefix)
+void mpu_entry_t::print(FILE *f __attribute__((unused)), const char *prefix __attribute__((unused)))
 {
     if (enable)
     {
@@ -303,14 +304,14 @@ void mpu_entry_t::print(FILE *f, const char *prefix)
             PRINTF("%s%s\n",prefix,comment.c_str());
     #endif
             PRINTF("    {\n");
-            PRINTF("        .RBAR = ARM_MPU_RBAR(%dUL, 0x%08xUL),\n",Region,BaseAddress);
+            PRINTF("        .RBAR = ARM_MPU_RBAR(%uUL, 0x%08uUL),\n",Region,BaseAddress);
             PRINTF("        .RASR = 0\n");
             PRINTF("    },\n");
         }
     }
 }
 
-static void display_interval( const DisjointInterval<uint32_t,mpu_entry_t*>& rl, FILE *f, const char *prefix )
+static void display_interval( const DisjointInterval<uint32_t,mpu_entry_t*>& rl, FILE *f __attribute__((unused)), const char *prefix  __attribute__((unused)))
 {
     uint32_t size = rl.stop-rl.start+1;
     char size_string[10];
@@ -321,7 +322,7 @@ static void display_interval( const DisjointInterval<uint32_t,mpu_entry_t*>& rl,
         //MDX2_LOG2_ERROR(MDX2_DIGIHAL_MPU_MEMORY_UNMAPPED,rl.start,rl.stop);
 #else
 #endif
-        PRINTF("%s%08x %08x %6s  . unmapped\n",prefix,rl.start,rl.stop,size_string);
+        PRINTF("%s%08x %08x %6s  . unmapped\n",prefix,(uint32_t)rl.start,(uint32_t)rl.stop,size_string);
     }
     else
     {
@@ -340,7 +341,7 @@ static void display_interval( const DisjointInterval<uint32_t,mpu_entry_t*>& rl,
         //MDX2_LOG4_ERROR(MDX2_DIGIHAL_MPU_MEMORY_MAP,rl.start,rl.stop,max_entry->Region,(uint32_t)(size_t)max_entry->access_type_to_string());
 #else
 #endif
-        PRINTF("%s%08x %08x %6s %2d %s\n",prefix,rl.start,rl.stop,size_string,max_entry->Region,max_entry->access_type_to_string());
+        PRINTF("%s%08x %08x %6s %2u %s\n",prefix,rl.start,rl.stop,size_string,max_entry->Region,max_entry->access_type_to_string());
     }
 }
 static void display_range( const  DisjointRangeVector<uint32_t,mpu_entry_t*>& arv, FILE *f, const char *prefix ) {
@@ -505,7 +506,7 @@ void mpu_display_t::get_first_and_last_address(uint32_t *first_addr_ptr, uint32_
  * also called by mpu_dump() in configure_mpu.cpp
  * 
  */
-void mpu_display_t::display_entries(FILE *f, const char *prefix)
+void mpu_display_t::display_entries(FILE *f __attribute__((unused)), const char *prefix __attribute__((unused)))
 {
 #ifndef MDX2_SMALL_MEMORY
     for (uint32_t i=0;i<MAX_ENTRIES;i++)
@@ -515,6 +516,5 @@ void mpu_display_t::display_entries(FILE *f, const char *prefix)
         e->print(f,prefix);
     }
 #endif
-
 }
 

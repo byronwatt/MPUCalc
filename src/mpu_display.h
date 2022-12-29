@@ -9,8 +9,10 @@
 #define MPU_DISPLAY_H
 
 #include <stdio.h>
-#include "mdx2_fw_types.h"
+#include <stdint.h>
+#ifdef MDX2_FREERTOS_TARGET
 #include "cpu_m7.h"
+#endif
 #include "mpu_armv7.h"
 #ifndef MDX2_SMALL_MEMORY
 #include <string>

@@ -4,44 +4,19 @@
 * @brief
 *   This file configures the m7 MPU
 */
-
-// Include Files
-
-// Local Enumerated Types
-
-// Local Constants
-
-// Namespace
-
-// Local Macro Definitions
-
-// Local Classes
-
-// Local Structures and Unions
-
-// Local Variables
-
-// Local Function Prototypes
-
-// Extern Variables
-
-// Private Functions
-
-// Module Functions
-
-// Public Functions
+#ifdef MDX2_FREERTOS_TARGET
 
 #include "cpu_m7.h"
 #include "mpu_armv7.h"
-#include "top.h"
-#include "mdx2_freertos.h"
+//#include "top.h"
+//#include "mdx2_freertos.h"
 #include "configure_mpu.h"
 #include "dbg_log.h"
-#include "device_ocr_addr.h"
-#include "mdx2_shared_memory.h"
+//#include "device_ocr_addr.h"
+//#include "mdx2_shared_memory.h"
 #include "mpu_calculator.h"
 #include "mpu_display.h"
-#include "multitask.h" // for STACK_OVERFLOW_MPU_GUARD_SIZE_IN_BYTES
+//#include "multitask.h" // for STACK_OVERFLOW_MPU_GUARD_SIZE_IN_BYTES
 
 
 #include "mpu_table.h"
@@ -264,3 +239,4 @@ void mpu_clear_region()
     ARM_MPU_ClrRegion(MPU_ENTRY_15_FOR_TESTING_PMON_CACHED_READS);
 }
 
+#endif

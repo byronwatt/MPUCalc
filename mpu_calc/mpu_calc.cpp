@@ -28,13 +28,15 @@
 #include "mpu_calculator.h"
 #include "configure_mpu.h"
 #include "mpu_display.h"
-#include "mdx2_cmd_line_options.h"
-#include "dx2_gtest_base.h"
+#include "cmd_line_options.h"
+#include "dbg_log.h"
+#include <assert.h>
+//#include "dx2_gtest_base.h"
 
 uint32_t global_region_number = 0;
 mpu_display_t global_display;
 
-static void add_region( uint32_t start_addr, uint32_t size, uint32_t end_addr, uint32_t DisableExec, uint32_t AccessPermission, uint32_t AccessAttributes, std::string comment, std::string attributes )
+static void add_region( uint32_t start_addr, uint32_t size, uint32_t end_addr, uint32_t DisableExec, uint32_t AccessPermission, uint32_t AccessAttributes, std::string comment, std::string attributes __attribute__((unused)) )
 {
     mpu_calculator_t mpu_calc;
     mpu_calc.mpu_region_number = global_region_number;
@@ -105,7 +107,7 @@ static bool token_matches( yaml_node_t *node, const char *token_name )
     return true;
 }
 
-static uint32_t token_to_hex( yaml_node_t *node ) UNUSED;
+static uint32_t token_to_hex( yaml_node_t *node ) __attribute((unused));
 static uint32_t token_to_hex( yaml_node_t *node )
 {
     MDX2_ASSERT(node->type == YAML_SCALAR_NODE,"line: %d",(int)node->start_mark.line);
@@ -129,7 +131,7 @@ typedef struct {
     uint32_t value;
 } token_value_t;
 
-static uint32_t token_to_from_list( yaml_node_t *node, const char *what, const token_value_t *token_values, uint32_t len )
+static int token_to_from_list( yaml_node_t *node, const char *what, const token_value_t *token_values, uint32_t len )
 {
     for (uint32_t i=0;i<len;i++)
     {
@@ -150,7 +152,7 @@ static uint32_t token_to_from_list( yaml_node_t *node, const char *what, const t
         const token_value_t *tv = &token_values[i];
         printf("    %s\n",tv->token_name);
     }
-    MDX2_ASSERT(FALSE);
+    assert(0);
 }
 
 
@@ -507,7 +509,7 @@ static UintOption option_mpu_table_size(16, "mpu_table_size", "mpu table size 1-
 int main(int argc, const char **argv)
 {
     /* parse googletest options */
-    testing::InitGoogleTest(&argc, (char **)argv);
+    //testing::InitGoogleTest(&argc, (char **)argv);
 
     /* parse other options (these options are saved in option_*) */
     CmdLineOptions::GetInstance()->ParseOptions(argc,argv);

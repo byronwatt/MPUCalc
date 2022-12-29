@@ -7,7 +7,6 @@
 
 #include "mpu_calculator.h"
 #include "dbg_log.h"
-#include "mdx2_sys.h"
 
 #ifdef MDX2_FREERTOS_TARGET
 #define DEBUG_LOG_STRING(x) do { } while (0)

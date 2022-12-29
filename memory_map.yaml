@@ -1,0 +1,57 @@
+#
+# This is used by device.mk
+#   after linking the firmware for the first time,
+#   it runs run_update_memory_map.sh and creates $(BINDIR)/memory_map.h
+#   which defines the MPU table that will be used for the dx2 build.
+# 
+# note:
+#   DisableExec defaults to NEVER_EXECUTE
+#   AccessPermission: defaults to ARM_MPU_AP_FULL
+#
+
+# to workaround ARM M7 errata:
+# 1013783 PLD might perform linefill to address that would generate a MemManage Fault
+# define MPU region 0 as 4G NO ACCESS.
+region:
+        comment:          start by defining all addresses as no access to avoid PLD errata.
+        start_addr:       0x0
+        end_addr:         0xffffffff
+        AccessAttributes: NO_ACCESS
+        AccessPermission: ARM_MPU_AP_NONE
+
+region:
+        comment:          DEV_CFG
+        start_addr:       0x00f00000
+        size:             33M
+        AccessAttributes: DEVICE_SHAREABLE
+
+region:
+        comment:          OCR (default is shareable and works for LDREX/STREX, does it work for jtag?)
+        start_addr:       0x400000
+        size:             1MB
+        AccessAttributes: WRITE_BACK_READ_AND_WRITE_ALLOCATE
+region:
+        comment:          after the inbox/outbox is mdx2_device_log_buffers_t which contains a description of where to find logging & stats and assert message, but we could just make it uncached, or manually flush
+        start_addr:       0x004f8000
+        size:             32K
+        AccessAttributes: WRITE_THROUGH_NO_WRITE_ALLOCATE
+
+region:
+        comment:          inbox/outbox (hostmsg request/response) currently configured as uncached, but we should manually do the cache flush/invalidate.
+        start_addr:       0x004f8000
+        size:             16K
+        AccessAttributes: UNCACHED
+
+region:
+        comment:          executable and read only for both .text and .rodata (__data_start__=$__data_start__)
+        start_addr:       0x400000
+        end_addr:         0x401200
+        DisableExec:      EXECUTE
+        AccessAttributes: WRITE_BACK_READ_AND_WRITE_ALLOCATE
+        AccessPermission: ARM_MPU_AP_RO
+
+region:
+        comment:          stats and logging - write through (__logging_start__=$__logging_start__ .. __logging_end__=$__logging_end__)
+        start_addr:       0x440000
+        end_addr:         0x460000
+        AccessAttributes: WRITE_THROUGH_NO_WRITE_ALLOCATE

@@ -8,8 +8,10 @@
 #ifndef MPU_CALCULATOR_H
 #define MPU_CALCULATOR_H
 
-#include "mdx2_fw_types.h"
+#include <stdint.h>
+#ifdef MDX2_FREERTOS_TARGET
 #include "cpu_m7.h"
+#endif
 #include "mpu_armv7.h"
 
 class mpu_calculator_t {

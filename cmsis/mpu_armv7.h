@@ -31,6 +31,7 @@
 #ifndef ARM_MPU_ARMV7_H
 #define ARM_MPU_ARMV7_H
 
+#ifndef MDX2_FREERTOS_TARGET
 /* these are defined in core_cm7.h but i'm having trouble including that file in the comexpress build.*/
 
 /* MPU Type Register Definitions */
@@ -342,3 +343,6 @@ __STATIC_INLINE void ARM_MPU_Load(ARM_MPU_Region_t const* table, uint32_t cnt)
   }
   ARM_MPU_OrderedMemcpy(&(MPU->RBAR), &(table->RBAR), cnt*rowWordSize);
 }
+#endif
+
+#endif
