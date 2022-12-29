@@ -411,4 +411,12 @@ Add some pictures.
 
 The code is still has dependencies on our build environment; Need to sanitize it further and create a github workflow for compiling/running/testing.
 
+code is starting to compile:
+
+[![build/test status](https://github.com/byronwatt/MPUCalc/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/byronwatt/MPUCalc/actions/workflows/c-cpp.yml)
+[![Codecov](https://codecov.io/gh/byronwatt/MPUCalc/coverage.svg?branch=main)](https://codecov.io/gh/byronwatt/MPUCalc/branch/main)
+[![Issues](https://img.shields.io/github/issues/ByronWatt/MPUCalc)](https://github.com/byronwatt/MPUCalc/issues)
+[![License](https://img.shields.io/github/license/ByronWatt/MPUCalc)](https://github.com/byronwatt/MPUCalc/blob/main/LICENSE)
+
+
 Add the freertos patch for the stack red zone
