@@ -1,0 +1,80 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    # https://github.com/actions/runner-images
+    # changed from ubuntu-latest which was installing bats_1.1.0
+    runs-on: ubuntu-22.04
+
+    permissions:
+      # required for all workflows
+      security-events: write
+      
+    steps:
+    - uses: actions/setup-python@v1
+      with:
+            python-version: '3.x'
+    - name: Install meson/ninja
+      run: pip3 install meson ninja
+
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    # - name: build
+    #   run: |
+    #     cmake -S . -B build -G Ninja
+    #     cmake --build build
+    - name: build
+      run: |
+        make all
+
+    - name: Run tests
+      run: |
+        build/mpu_calc memory_map=memory_map.yaml output_filename=memory_map.h
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        gcov: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+
+#    - name: Publish Test Report
+#      uses: mikepenz/action-junit-report@v3
+#      if: always() # always run even if the previous step fails
+#      with:
+#        report_paths: '**/test_results/TestReport*.xml'
+
+
+#    # Initializes the CodeQL tools for scanning.
+#    - name: Initialize CodeQL
+#      uses: github/codeql-action/init@v2
+#        # Override language selection by uncommenting this and choosing your languages
+#      with:
+#        languages: cpp
+#
+#      # Autobuild attempts to build any compiled languages (C/C++, C#, Go, or Java).
+#      # If this step fails, then you should remove it and run the build manually (see below).
+#      # - name: Autobuild
+#      #  uses: github/codeql-action/autobuild@v2
+#
+#      # ℹ️ Command-line programs to run using the OS shell.
+#      # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+#
+#      # ✏️ If the Autobuild fails above, remove it and uncomment the following
+#      #    three lines and modify them (or add more) to build your code if your
+#      #    project uses a compiled language
+#
+#      #- run: |
+#      #     make bootstrap
+#      #     make release
+#
+#    - name: Perform CodeQL Analysis
+#      uses: github/codeql-action/analyze@v2

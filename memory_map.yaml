@@ -43,15 +43,15 @@ region:
         AccessAttributes: UNCACHED
 
 region:
-        comment:          executable and read only for both .text and .rodata (__data_start__=$__data_start__)
+        comment:          executable and read only for both .text and .rodata (__data_start__=0x44f800)
         start_addr:       0x400000
-        end_addr:         0x401200
+        end_addr:         0x44f800
         DisableExec:      EXECUTE
         AccessAttributes: WRITE_BACK_READ_AND_WRITE_ALLOCATE
         AccessPermission: ARM_MPU_AP_RO
 
 region:
-        comment:          stats and logging - write through (__logging_start__=$__logging_start__ .. __logging_end__=$__logging_end__)
-        start_addr:       0x440000
-        end_addr:         0x460000
+        comment:          stats and logging - write through (__logging_start__=0x486800 .. __logging_end__=$0x4f0000)
+        start_addr:       0x486800
+        end_addr:         0x4f0000
         AccessAttributes: WRITE_THROUGH_NO_WRITE_ALLOCATE
