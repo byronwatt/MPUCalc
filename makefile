@@ -4,6 +4,7 @@ all: compile
 
 BUILD_DIR=build
 TEST_RESULTS_DIR=test_results
+# note: not currently building the firmware
 FIRMWARE_BUILD_DIR=fw_build
 
 configure:
