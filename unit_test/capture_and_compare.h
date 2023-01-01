@@ -1,14 +1,4 @@
-/*******************************************************************************
-*  COPYRIGHT (C) ALL RIGHTS RESERVED.
-* -----------------------------------------------------------------------------
-*  This software is licensed to customers pursuant to the terms and conditions
-*  of the Software License Agreement contained in the text file software.lic
-*  that is distributed along with this software. This software can only be
-*  utilized if all terms and conditions of the Software License Agreement are
-*  accepted. If there are any questions, concerns, or if the Software License
-*  Agreement text file, software.lic, is missing please contact applications for
-*  assistance.
-*******************************************************************************/
+/* copyright Microchip 2022, MIT License */
 
 /**
 * @file
