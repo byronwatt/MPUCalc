@@ -23,8 +23,8 @@ fw_compile: $(FIRMWARE_BUILD_DIR)
 	meson compile -C $(FIRMWARE_BUILD_DIR)
 
 test: compile
+	build/unit_test
 	for f in test/**/test.bats ; do (cd `dirname $$f`; pwd; bats test.bats); done
-
 
 clean:
 	rm -rf $(BUILD_DIR) $(TEST_RESULTS_DIR) html

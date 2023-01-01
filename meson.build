@@ -89,6 +89,16 @@ yaml_dep = declare_dependency(
 )
 
 
+gtest_dep = declare_dependency(
+    include_directories : [
+      'gtest/googletest/include',
+      'gtest/googletest',
+    ],
+    sources : [
+'gtest/googletest/src/gtest_main.cc',
+'gtest/googletest/src/gtest-all.cc',
+    ],
+)
 
 cmdlineoptions_dep = declare_dependency(
     include_directories : [
@@ -104,4 +114,11 @@ if meson.is_cross_build() == false
     dependencies: [mpucalc_dep,
        cmdlineoptions_dep,
        yaml_dep] )
+  executable('unit_test',
+    'unit_test/mpu_calculator_test.cpp',
+    'unit_test/capture_and_compare.cpp',
+    dependencies: [mpucalc_dep,
+       cmdlineoptions_dep,
+       yaml_dep,
+       gtest_dep] )
 endif
