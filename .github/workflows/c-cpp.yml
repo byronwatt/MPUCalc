@@ -34,6 +34,8 @@ jobs:
 
     - name: Run tests
       run: |
+        sudo apt-get install bats
+        bats --version
         make test
 
     - name: Upload coverage to Codecov
