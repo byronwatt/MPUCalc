@@ -10,12 +10,6 @@ configure:
 	pip3 install meson ninja
 	sudo apt-get install gcovr clang-format dos2unix
 
-test: compile
-	rm -rf $(TEST_RESULTS_DIR)
-	-mkdir $(TEST_RESULTS_DIR)
-	bats --formatter junit --output $(TEST_RESULTS_DIR) test/test*.bats
-	gcovr -s
-
 $(BUILD_DIR):
 	meson setup --buildtype debug --optimization 2 --warnlevel 3 --werror -Db_coverage=true $(BUILD_DIR)
 
@@ -28,6 +22,9 @@ compile: $(BUILD_DIR)
 fw_compile: $(FIRMWARE_BUILD_DIR)
 	meson compile -C $(FIRMWARE_BUILD_DIR)
 
+test: compile
+	for f in test/**/test.bats ; do (cd `dirname $$f`; pwd; bats test.bats); done
+
 
 clean:
 	rm -rf $(BUILD_DIR) $(TEST_RESULTS_DIR) html
@@ -35,7 +32,8 @@ clean:
 tidy:
 	clang-format --style=Microsoft -i inc/* src/* example/*
 
+.PHONY: coverage_report
 coverage_report:
-	rm -rf html
-	mkdir -p html
-	gcovr --html-details --output html/index.html
+	rm -rf coverage_report
+	mkdir -p coverage_report
+	gcovr --html-details --output coverage_report/index.html

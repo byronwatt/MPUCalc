@@ -120,8 +120,8 @@ static uint32_t token_to_hex( yaml_node_t *node )
     uint32_t value = strtol( buffer, &temp, 16 );
     if (*temp != 0)
     {
-        printf("expected hexadecimal in '%s' at line %d",buffer,(int)node->start_mark.line);
-        MDX2_ASSERT(FALSE);
+        printf("expected hexadecimal in '%s' at line %d\n",buffer,(int)node->start_mark.line);
+        exit(-1);
     }
     return value;
 }
@@ -145,14 +145,14 @@ static int token_to_from_list( yaml_node_t *node, const char *what, const token_
     uint32_t token_len = node->data.scalar.length;
     strncpy(buffer,(const char *)node->data.scalar.value,token_len);
     buffer[token_len] = 0;
-    printf("unknown %s in '%s' at line %d",what,buffer,(int)node->start_mark.line);
+    printf("unknown %s in '%s' at line %d\n",what,buffer,(int)node->start_mark.line);
     printf("valid values:\n");
     for (uint32_t i=0;i<len;i++)
     {
         const token_value_t *tv = &token_values[i];
         printf("    %s\n",tv->token_name);
     }
-    assert(0);
+    exit(-1);
 }
 
 
@@ -214,8 +214,8 @@ static uint32_t token_to_dec( yaml_node_t *node )
         value = strtol( &buffer[2], &temp, 16 );
         if (*temp != 0)
         {
-            printf("expected hex in '%s' at line %d",buffer,(int)node->start_mark.line);
-            MDX2_ASSERT(FALSE);
+            printf("expected hex in '%s' at line %d\n",buffer,(int)node->start_mark.line);
+            exit(-1);
         }
     } else {
         value = strtol( buffer, &temp, 10 );
@@ -233,8 +233,8 @@ static uint32_t token_to_dec( yaml_node_t *node )
         }
         else if (*temp != 0)
         {
-            printf("expected decimal in '%s' at line %d",buffer,(int)node->start_mark.line);
-            MDX2_ASSERT(FALSE);
+            printf("expected decimal in '%s' at line %d\n",buffer,(int)node->start_mark.line);
+            exit(-1);
         }
     }
     return value;
@@ -402,7 +402,7 @@ static void read_memory_map_from_file(const char *file_name)
     if (file == 0)
     {
         printf("error opening '%s'\n",file_name);
-        return;
+        exit(-1);
     }
     assert(file);
 

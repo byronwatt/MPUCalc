@@ -28,17 +28,13 @@ jobs:
       with:
         submodules: recursive
 
-    # - name: build
-    #   run: |
-    #     cmake -S . -B build -G Ninja
-    #     cmake --build build
     - name: build
       run: |
         make all
 
     - name: Run tests
       run: |
-        build/mpu_calc memory_map=memory_map.yaml output_filename=memory_map.h
+        make test
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
